@@ -2,29 +2,201 @@
 title: "RDataWrangling"
 author: "Çağrı Çebişli"
 date: "2023-01-22"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+#   Useful Links
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+https://www.uvm.edu/~tdonovan/RforFledglings/data-wrangling-with-dplyr.html
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+https://intro2r.com/summarising-data-frames.html
 
-```{r cars}
-summary(cars)
+#   For Importing Data
+
+##    Folders, Working Directory, Shortcuts
+
+-   Shortcut for chunk: Command + Option + I
+
+-   Invisible Chunk: r,warning=FALSE,error=FALSE,message=FALSE,include=FALSE, Echo=FALSE
+
+**Sets Working Directory to Saved Folder:**
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+library(here): read_xlsx(here("folder name", "data to import.xlsx"))
+
+After you set your working directory to saved folder, you can move around with using here package. Thus, this operation is good for conducting reproducible research. You do not talk about /c:cagri etc., only move around folders, so folder name is important here.
+
+##    Exploratory Data Analysis
+
+**EDA Report DlookR**
+
+library(dlookr)
+
+EDA Report
+
+data %>% eda_report(output_format = "html", output_file   = "EDA_diamonds.html")
+
+Very good exploratory data analysis page. Do take notes while reading this, write down ideas and disaggregations.
+
+###   Crosstabs
+
+Good crosstab to see frequency, include NA to understand overall column.
+
+**Some x-tab examples**
+
+(table(data$column,useNA = "always"))
+
+prop.table(table(data$column,useNA="always"))
+
+CD_WFP %>% group_by(province) %>% summarize(AvgTR_Month = mean(Arrival_Differences,na.rm = T),
+                                            CampRes = mean(camp_residence_how_long,na.rm = T))
+
+
+***
+aggregate(flowers[, 4:7], by = list(nitrogen = flowers$nitrogen,
+                                 treat = flowers$treat), FUN = mean)
+***
+
+
+
+#   Column Re-arrange
+
+Extract month from character saved date variable.
+
+Dots in format can change into: % , / , etc.
+
+month(as.POSIXlt(data$date_as_character_variable, format="%d.%m.%Y"))
+
+#   Select Columns - Arrange - Filter
+
+```{r}
+library(tidyr)
+library(dplyr)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+starwars %>%
+  mutate(name, bmi = mass / ((height / 100)  ^ 2)) %>%
+  select(name:mass, bmi)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+starwars %>%
+  arrange(desc(mass))
+```
+
+```{r}
+starwars %>%
+  group_by(species) %>%
+  summarise(
+    n = n(),
+    mass = mean(mass, na.rm = TRUE)
+  ) %>%
+  filter(
+    n > 1,
+    mass > 50
+  )
+```
+
+##    Subset
+
+subset(flowers, treat == "tip" & nitrogen == "medium" & block == 2, 
+                            select = c("treat", "nitrogen", "leafarea"))
+                            
+##    Reshape- Long and Wide Data
+
+###   Wide Data into Long Data
+
+```{r}
+wide_data <- data.frame(subject = c("A", "B", "C", "D"),
+               sex = c("M", "F", "F", "M"),
+               control = c(12.9, 5.2, 8.9, 10.5),
+               cond1 = c(14.2, 12.6, 12.1, 12.9),
+               cond2 = c(8.7, 10.1, 14.2, 11.9))
+wide_data
+```
+
+
+```{r}
+library(reshape2)
+
+my_long_df <- melt(data = wide_data, id.vars = c("subject", "sex"),
+                   measured.vars = c("control", "cond1", "cond2"),
+                   variable.name = "condition", value.name = "measurement")
+my_long_df
+```
+
+###   Long Data into Wide Data
+
+```{r}
+long_data <- data.frame(
+             subject = rep(c("A", "B", "C", "D"), each = 3),
+             sex = rep(c("M", "F", "F", "M"), each =3),
+             condition = rep(c("control", "cond1", "cond2"), times = 4),
+             measurement = c(12.9, 14.2, 8.7, 5.2, 12.6, 10.1, 8.9,
+                             12.1, 14.2, 10.5, 12.9, 11.9))
+head(long_data,5)
+```
+
+
+```{r}
+my_wide_df <- dcast(data = long_data, subject + sex ~ condition, 
+                    value.var = "measurement")
+my_wide_df
+```
+
+
+```{r}
+
+
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
