@@ -45,6 +45,10 @@ data %>% eda_report(output_format = "html", output_file   = "EDA_diamonds.html")
 
 Very good exploratory data analysis page. Do take notes while reading this, write down ideas and disaggregations.
 
+###   Take a Look to Data
+
+skimr::skim(data)
+
 ###   Crosstabs
 
 Good crosstab to see frequency, include NA to understand overall column.
@@ -152,24 +156,61 @@ my_wide_df <- dcast(data = long_data, subject + sex ~ condition,
 my_wide_df
 ```
 
+#   Variable Importance
 
 ```{r}
+#set.seed(12510)
+#model2 <- randomForest(Rank ~ ., data=traindata, 
+#mtry=4, 
+#nodesize=1
+#)
+#varImpPlot(model2,pch = 21 , bg = "cyan" , 
+#col = "darkorange", main = "Model 2 variable importance plot")
+#grid()
+```
+
+#   Data Viz
+
+##    Gif Graphs
 
 
+```{r}
+# ggplot(data = youtube_no_d, aes(x = view_count,y= like_count + dislike_count, color= brand))+
+#   geom_point(size = 2, alpha = 0.5) + 
+#   #adding a linear regression line for trends
+#   geom_smooth(method = 'lm', color= "grey", se = FALSE) +
+#   xlim(1,1000000)+
+#   ylim(0,3000) +
+#   theme_bw()+
+#   theme(legend.position = "none")+ 
+#   transition_states(brand) +
+#   #{closest state} to annotate the title/brand of each graph
+#   labs(title = '{closest_state}', y = "Likes and Dislikes", x= "Views") +
+#   theme(plot.title = element_text(hjust = 0.5, size = 18))
+```
+
+##    Sentiment Analysis
+
+```{r}
+# To instal it, simply run the command 
+install.packages ("sentimentr")
+
+# Load the sentimentr package
+library(sentimentr)
+
+# Define the text string to be analyzed
+text_data <- "The ambiance of the hotel is nice. I love staying at the hotel. But it is horrible weather"
+
+# Perform sentiment analysis on the text string
+sentiment_result <- sentiment(text_data)
+
+# Print the sentiment result
+print(sentiment_result)
 ```
 
 
-
 ```{r}
 
-```
-
-
-```{r}
-```
-
-
-```{r}
 ```
 
 
